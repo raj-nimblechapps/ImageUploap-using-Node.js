@@ -1,0 +1,52 @@
+File Upload via Api in node.js
+
+Router.js File
+
+router.post('/apiUpload',controller.imageUpload);
+
+Controller.js
+
+First Step:-
+
+1)—>var multer = require('multer');
+var storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, "./src/imageupload"); <= create a folder call imageupload.
+    },
+    filename: function (req, file, callback) {
+        // console.log(file.originalname);
+        // console.log("upper filename");
+        callback(null,file.originalname)
+    }
+});
+var upload = multer({storage: storage});
+
+
+Second Step:—>
+
+2)—>imageUpload(req, res, next) {
+    var upload = multer({
+           storage: storage
+       }).single('file')
+
+       upload(req, res, function (err) {
+          var jsObj = {};
+          jsObj['image'] = req.file.originalname;
+
+           if (err)
+           {
+               res.json({
+                   type: false,
+                   resultData: "Error occured: " + err
+               });
+           } else
+           {
+               res.json({
+                   type: true,
+                   resultData: "uploaded successfully",
+                   recordData: jsObj
+               })
+           }
+
+       });
+ }
